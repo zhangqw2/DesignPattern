@@ -1,7 +1,7 @@
 package com.example.designpattern.mementopattern;
 
 /**
- * 备份信息管理类
+ * 备份信息管理类,负责人类
  * @author zhangquanwei
  */
 public class Caretaker {

@@ -3,6 +3,7 @@ package com.example.designpattern.mementopattern;
 import lombok.Getter;
 
 /**
+ * 备忘录类
  * @author zhangquanwei
  */
 @Getter
