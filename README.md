@@ -511,3 +511,186 @@ spring:
 系统有很多类，它们的区别仅仅在于行为不同；
 
 一个系统需要动态地在几种算法中选择一种；
+
+#### 4.解释器模式
+
+#### 5.观察者模式
+
+观察者模式定义了对象之间的一对多依赖，让多个观察者同时监听某个主题对象，当主体对象发生变化时，它的所有观察者都会收到响应的通知。
+
+**优点**：
+
+观察者和被观察者之间建立一个抽象的耦合；
+
+观察者模式支持广播通信。
+
+**缺点**：
+
+观察者之间有过多的细节依赖，提高时间消耗及程序复杂度；
+
+应避免循环调用。
+
+[Blog类](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/observerpattern/Blog.java)是被观察者对象，被观察者对象需要继承JDK的Observable类，继承后，被观察者对象包含如下属性和方法
+
+```java
+public class Observable {
+    //标志位
+    private boolean changed = false;
+    //观察者集合
+    private Vector<Observer> obs;
+
+    /** Construct an Observable with zero Observers. */
+
+    public Observable() {
+        obs = new Vector<>();
+    }
+
+    /**
+     * Adds an observer to the set of observers for this object, provided
+     * that it is not the same as some observer already in the set.
+     * The order in which notifications will be delivered to multiple
+     * observers is not specified. See the class comment.
+     *
+     * @param   新增观察者
+     * @throws NullPointerException   if the parameter o is null.
+     */
+    public synchronized void addObserver(Observer o) {
+        if (o == null)
+            throw new NullPointerException();
+        if (!obs.contains(o)) {
+            obs.addElement(o);
+        }
+    }
+
+    /**
+     * Deletes an observer from the set of observers of this object.
+     * Passing <CODE>null</CODE> to this method will have no effect.
+     * @param   o   删除观察者
+     */
+    public synchronized void deleteObserver(Observer o) {
+        obs.removeElement(o);
+    }
+
+    /**
+     * If this object has changed, as indicated by the
+     * <code>hasChanged</code> method, then notify all of its observers
+     * and then call the <code>clearChanged</code> method to
+     * indicate that this object has no longer changed.
+     * <p>
+     * Each observer has its <code>update</code> method called with two
+     * arguments: this observable object and <code>null</code>. In other
+     * words, this method is equivalent to:
+     * <blockquote><tt>
+     * notifyObservers(null)</tt></blockquote>
+     *通知观察者
+     * @see     java.util.Observable#clearChanged()
+     * @see     java.util.Observable#hasChanged()
+     * @see     java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
+
+    /**
+     * If this object has changed, as indicated by the
+     * <code>hasChanged</code> method, then notify all of its observers
+     * and then call the <code>clearChanged</code> method to indicate
+     * that this object has no longer changed.
+     * <p>
+     * Each observer has its <code>update</code> method called with two
+     * arguments: this observable object and the <code>arg</code> argument.
+     *通知观察者,并传递数据
+     * @param   arg   any object.
+     * @see     java.util.Observable#clearChanged()
+     * @see     java.util.Observable#hasChanged()
+     * @see     java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    public void notifyObservers(Object arg) {
+        /*
+         * a temporary array buffer, used as a snapshot of the state of
+         * current Observers.
+         */
+        Object[] arrLocal;
+
+        synchronized (this) {
+            /* We don't want the Observer doing callbacks into
+             * arbitrary code while holding its own Monitor.
+             * The code where we extract each Observable from
+             * the Vector and store the state of the Observer
+             * needs synchronization, but notifying observers
+             * does not (should not).  The worst result of any
+             * potential race-condition here is that:
+             * 1) a newly-added Observer will miss a
+             *   notification in progress
+             * 2) a recently unregistered Observer will be
+             *   wrongly notified when it doesn't care
+             */
+            if (!changed)
+                return;
+            arrLocal = obs.toArray();
+            clearChanged();
+        }
+
+        for (int i = arrLocal.length-1; i>=0; i--)
+            ((Observer)arrLocal[i]).update(this, arg);
+    }
+
+    /**
+     * Clears the observer list so that this object no longer has any observers.
+     * 删除所有观察者
+     */
+    public synchronized void deleteObservers() {
+        obs.removeAllElements();
+    }
+
+    /**
+     * Marks this <tt>Observable</tt> object as having been changed; the
+     * <tt>hasChanged</tt> method will now return <tt>true</tt>.
+     * 设置标志位为true
+     */
+    protected synchronized void setChanged() {
+        changed = true;
+    }
+
+    /**
+     * Indicates that this object has no longer changed, or that it has
+     * already notified all of its observers of its most recent change,
+     * so that the <tt>hasChanged</tt> method will now return <tt>false</tt>.
+     * This method is called automatically by the
+     * <code>notifyObservers</code> methods.
+     *重置标志位为false
+     * @see     java.util.Observable#notifyObservers()
+     * @see     java.util.Observable#notifyObservers(java.lang.Object)
+     */
+    protected synchronized void clearChanged() {
+        changed = false;
+    }
+
+    /**
+     * Tests if this object has changed.
+     *判断标志位是否发生改变
+     * @return  <code>true</code> if and only if the <code>setChanged</code>
+     *          method has been called more recently than the
+     *          <code>clearChanged</code> method on this object;
+     *          <code>false</code> otherwise.
+     * @see     java.util.Observable#clearChanged()
+     * @see     java.util.Observable#setChanged()
+     */
+    public synchronized boolean hasChanged() {
+        return changed;
+    }
+
+    /**
+     * Returns the number of observers of this <tt>Observable</tt> object.
+     *统计观察者数量
+     * @return  the number of observers of this object.
+     */
+    public synchronized int countObservers() {
+        return obs.size();
+    }
+```
+
+Blog的comment方法中，当博客收到评论时，首先调用父类的setChanged()方法，设置标识位 changed = true，表示被观察者发生了改变；然后调用父类的notifyObservers(Object)方法通知所有观察者。
+
+观察者对象[Author](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/observerpattern/Author.java)需要实现JDK的Observer类，重写update方法。当被观察者对象调用了notifyObservers方法后，相应的观察者的update方法会被调用。
+
