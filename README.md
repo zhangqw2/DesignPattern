@@ -502,6 +502,46 @@ spring:
 
 #### 2.迭代器模式
 
+迭代器模式，又称游标模式。这种模式提供一种方法访问一个容器对象中各个元素，而又不需要暴露该对象的内部细节。
+
+通过引入迭代器可以将数据的遍历功能从聚合对象中分离出来，聚合对象只负责存储数据，而遍历数据由迭代器实现完成。Java语言类库中已经实现了迭代器模式，在实际开发中我们直接使用已经定义好的迭代器就可以了，像List、Set等集合都可以直接使用。
+
+**优点**
+
+1、它支持以不同的方式遍历一个聚合对象，在同一个聚合对象上可以定义多种遍历方式。替换迭代器就可以切换遍历方法。
+
+2、迭代器简化了聚合类。聚合对象可以不用自己再提供遍历方法。
+
+3、在迭代器模式中由于引入了抽象层，增加新的聚合类和迭代器类都很方便，无须修改原有代码，满足“开闭原则”的要求。
+
+**缺点**
+
+1、由于迭代器模式将存储数据和遍历数据的职责分离，增加新的聚合类需要对应增加新的迭代器来，类的个数成对增加，这在一定程度上增加了系统的复杂性。
+
+2、抽象迭代器设计难度相对较大，需要充分考虑到系统将来的扩展，，例如JDK内置迭代器Iterator就无法实现逆向遍历，如果需要实现逆向遍历，只能通过其子类ListIterator等来实现，而ListIterator迭代器无法用于操作Set类型的聚合对象。
+
+**适用场景**
+
+在以下情况可以考虑使用迭代器模式
+
+1、访问一个聚合对象的内容而无须暴露它的内部表示。将聚合对象的访问与内部数据的存储分离，使得访问聚合对象时无须了解其内部实现细节。
+
+2、需要为一个聚合对象提供多种遍历方式。
+
+3、为遍历不同聚合结构提供统一的接口，该接口的实现类中为不同的聚合结构提供不同的遍历方式，而客户端可以一致性的操作该接口。
+
+迭代器模式主要由以下角色组成
+
+**抽象迭代器角色（Iterator）**：抽象迭代器角色定义访问和遍历元素的接口。[Iterator](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/iterator/Iterator.java)接口就是代表的这个角色。
+
+**具体迭代器角色（Concrete Iterator）**：具体迭代器角色要实现迭代器接口， 并要记录遍历中的当前位置。[BookShelfIterator](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/iterator/BookShelfIterator.java)类就是代表的这个角色。
+
+**容器角色（Aggregate）**：容器角色负责提供创建具体迭代器角色的接口。[Aggregate](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/iterator/Aggregate.java)接口代表的就是这个角色。
+
+**具体容器角色（Concrete Aggregate）**：具体容器角色实现创建具体迭代器角色的接口，这个具体迭代器角色与该容器的结构相关。[BookShelf](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/iterator/BookShelf.java)
+
+代表的就是这个角色。
+
 #### 3.策略模式
 
 策略模式定义了算法家族，分别封装起来，让它们之间可以互相替换。此模式让算法的变化不会影响到使用算法的用户。策略模式常用于消除大量的if else代码。
