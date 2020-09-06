@@ -694,3 +694,31 @@ Blog的comment方法中，当博客收到评论时，首先调用父类的setCha
 
 观察者对象[Author](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/observerpattern/Author.java)需要实现JDK的Observer类，重写update方法。当被观察者对象调用了notifyObservers方法后，相应的观察者的update方法会被调用。
 
+#### 6.备忘录模式
+
+备忘录模式是指在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可以将该对象恢复到原先保存的状态。
+
+
+**优点**
+
+1、它提供了一种状态恢复的实现机制，使得用户可以方便地回到一个特定的历史步骤，当新的状态无效或者存在问题时，可以使用暂时存储起来的备忘录将状态复原。
+
+2、备忘录实现了对信息的封装，一个备忘录对象是一种原发器对象状态的表示，不会被其他代码所改动。备忘录保存了原发器的状态，采用列表、堆栈等集合来存储备忘录对象可以实现多次撤销操作。
+
+**缺点**
+
+资源消耗过大，如果需要保存的原发器类的成员变量太多，就不可避免需要占用大量的存储空间，每保存一次对象的状态都需要消耗一定的系统资源。
+
+**适用场景**
+
+1、保存一个对象在某一个时刻的全部状态或部分状态，这样以后需要时它能够恢复到先前的状态，实现撤销操作。
+
+2、防止外界对象破坏一个对象历史状态的封装性，避免将对象历史状态的实现细节暴露给外界对象。
+
+**原发器类（Originator）**：创建一个备忘录对象，使用备忘录存储它的内部状态。[Game](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/mementopattern/Game.java)
+
+**负责人类（CareTaker）**：负责保存好备忘录对象，不能检查或操作备忘录的内容。[Caretaker](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/mementopattern/Caretaker.java)
+
+**备忘录类（Memento）**：将原发器的内部状态存储起来，原发器根据需要决定备忘录存储原发器的哪些内部状态。
+[GameMemento](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/mementopattern/GameMemento.java)
+
