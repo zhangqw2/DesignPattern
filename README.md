@@ -722,3 +722,30 @@ Blog的comment方法中，当博客收到评论时，首先调用父类的setCha
 **备忘录类（Memento）**：将原发器的内部状态存储起来，原发器根据需要决定备忘录存储原发器的哪些内部状态。
 [GameMemento](https://github.com/zhangqw2/DesignPattern/blob/master/src/main/java/com/example/designpattern/mementopattern/GameMemento.java)
 
+#### 7.命令模式
+
+#### 8.中介者模式
+
+#### 9.责任链模式
+
+职责链模式为请求创建一个接收此次请求对象的链。
+
+**适用于**：
+
+一个请求的处理需要多个对象当中的一个或几个协作处理；
+
+**优点**：
+
+请求的发送者和接受者（请求的处理）解耦；
+
+职责链可以动态的组合。
+
+**缺点**：
+
+职责链太长或者处理时间过长，影响性能；
+
+职责链可能过多。
+
+#### 10.访问者模式
+
+#### 11.状态模式
