@@ -1,5 +1,8 @@
 package com.example.designpattern.chainofresponsibility;
 
+/**
+ * @author zhangquanwei
+ */
 public class StringLengthValidator extends StringValidator {
     @Override
     public void check(String value) {
